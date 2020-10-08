@@ -37,10 +37,45 @@ function updateLocationPage(location){
     liEl.text(city);
     $(".list-group-flush").append(liEl)
     // $("img").attr("src", "http://openweathermap.org/img/wn/10d@2x.png")
-    $("#city-title").html(`${city}  (${today.format("L")}) <img src=${src}>`)
-    $("#temp").html(`Temprature: ${convertKtoF(parseFloat(location.main.temp)).toFixed(2)} &deg;F`)
-    $("#humidity").text(`Humidity:  ${location.main.humidity}%`)
-    $("#wind-speed").text(`Wind Speed:  ${location.wind.speed}MPH`)
+    $("#city-title").html(`${city} (${today.format("L")}) <img src=${src}>`)
+    $("#temp").html(`Temprature: ${convertKtoF(parseFloat(location.main.temp)).toFixed(2)}&deg;F`)
+    $("#humidity").text(`Humidity: ${location.main.humidity}%`)
+    $("#wind-speed").text(`Wind Speed: ${location.wind.speed}MPH`)
+
+    // making a UV index request and function
+    let lon = location.coord.lon;
+    let lat = location.coord.lat;
+
+    function buildUVIndexUrl(){
+        let url = "http://api.openweathermap.org/data/2.5/uvi?";
+        var queryParams = { "appid": "99686e16316412bc9b27bd9cb868d399"};
+        queryParams.lat = lat;
+        queryParams.lon = lon;
+        // queryParams.q = "seattle";
+        return url + $.param(queryParams);    
+    }
+
+    let UVUrl = buildUVIndexUrl();
+    
+    $.ajax({
+        url: UVUrl, 
+        method: "GET"
+    }).then(function(res){
+        // console.log(res)
+        let UVIndex = res.value;
+        console.log(UVIndex);
+        
+        if(UVIndex > 10.00){
+            $("#uv-index").addClass("btn-danger");
+            $("#uv-index").removeClass("btn-success");
+        } else {
+            $("#uv-index").addClass("btn-success");
+            $("#uv-index").removeClass("btn-danger");
+        }
+        $("#uv-label").text(`UV-Index: `)
+        $("#uv-index").text(`${UVIndex}`)
+    })
+
 }
 // a function to convert Kelvin to Farenheit
 function convertKtoF(tempInKelvin) {    
@@ -81,31 +116,31 @@ function updateForecastpage(forecast){
     // day-one-pages
     $("#day-1").text(forecastOne.dt_txt)
     $("#day-one-icon").attr("src", src1);
-    $("#temp-day-1").html(`Temp: ${convertKtoF(parseFloat(forecastOne.main.temp)).toFixed(2)} &deg;F`)
+    $("#temp-day-1").html(`Temp: ${convertKtoF(parseFloat(forecastOne.main.temp)).toFixed(2)}&deg;F`)
     $("#humid-day-1").text(`Humidity:  ${forecastOne.main.humidity}%`)
 
     // day-two
     $("#day-2").text(forecastTwo.dt_txt)
     $("#day-two-icon").attr("src", src2);
-    $("#temp-day-2").html(`Temp: ${convertKtoF(parseFloat(forecastTwo.main.temp)).toFixed(2)} &deg;F`)
+    $("#temp-day-2").html(`Temp: ${convertKtoF(parseFloat(forecastTwo.main.temp)).toFixed(2)}&deg;F`)
     $("#humid-day-2").text(`Humidity:  ${forecastTwo.main.humidity}%`)
 
     // day-three
     $("#day-3").text(forecastThree.dt_txt)
     $("#day-three-icon").attr("src", src3);
-    $("#temp-day-3").html(`Temp: ${convertKtoF(parseFloat(forecastThree.main.temp)).toFixed(2)} &deg;F`)
+    $("#temp-day-3").html(`Temp: ${convertKtoF(parseFloat(forecastThree.main.temp)).toFixed(2)}&deg;F`)
     $("#humid-day-3").text(`Humidity:  ${forecastThree.main.humidity}%`)
 
     // day-four
     $("#day-4").text(forecastFour.dt_txt)
     $("#day-four-icon").attr("src", src4);
-    $("#temp-day-4").html(`Temp: ${convertKtoF(parseFloat(forecastFour.main.temp)).toFixed(2)} &deg;F`)
+    $("#temp-day-4").html(`Temp: ${convertKtoF(parseFloat(forecastFour.main.temp)).toFixed(2)}&deg;F`)
     $("#humid-day-4").text(`Humidity:  ${forecastFour.main.humidity}%`)
 
     // day-five
     $("#day-5").text(forecastFive.dt_txt)
     $("#day-five-icon").attr("src", src5);
-    $("#temp-day-5").html(`Temp: ${convertKtoF(parseFloat(forecastFive.main.temp)).toFixed(2)} &deg;F`)
+    $("#temp-day-5").html(`Temp: ${convertKtoF(parseFloat(forecastFive.main.temp)).toFixed(2)}&deg;F`)
     $("#humid-day-5").text(`Humidity:  ${forecastFive.main.humidity}%`)
 }
 
