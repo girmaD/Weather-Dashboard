@@ -2,7 +2,7 @@
 let today = moment();
 
 function buildLocationUrl(){
-    let url = "http://api.openweathermap.org/data/2.5/weather?";
+    let url = "https://api.openweathermap.org/data/2.5/weather?";
     var queryParams = { "appid": "99686e16316412bc9b27bd9cb868d399"};
     queryParams.q = $("#city-name").val().trim();
     // queryParams.q = "seattle";
