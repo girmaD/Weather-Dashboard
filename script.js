@@ -47,7 +47,7 @@ function updateLocationPage(location){
     let lat = location.coord.lat;
 
     function buildUVIndexUrl(){
-        let url = "http://api.openweathermap.org/data/2.5/uvi?";
+        let url = "https://api.openweathermap.org/data/2.5/uvi?";
         var queryParams = { "appid": "99686e16316412bc9b27bd9cb868d399"};
         queryParams.lat = lat;
         queryParams.lon = lon;
