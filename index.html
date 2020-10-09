@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
     <!-- Font Awesome CSS Icons (For cool glyphicons) -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css">
-  
+    <link rel="stylesheet" href="./style.css">
 
 </head>
 <body>
@@ -28,7 +28,7 @@
                 </div>
                 <div class="row mt-3 d-none d-sm-block">
                     <div class="card w-75">
-                        <ul class="list-group list-group-flush">
+                        <ul class="list-group list-group-flush ">
                         
                         </ul>
                     </div>
@@ -37,7 +37,7 @@
             <div class="col-md-8 m-1">
                 <div class="row">
                     <div class="card w-100">
-                        <div class="card-body bg-secondary text-white">
+                        <div id="main-body" class="card-body d-none bg-secondary text-white">
                           <h5 id="city-title"></h5>                          
                           <p id="temp"></p>                          
                           <p id="humidity"></p>                          
@@ -50,52 +50,12 @@
                       </div>
                 </div>
                 <div class="row mt-5">
-                    <h5 class="bg-dark text-white py-2 w-100" >5-Day Forecast: </h5>
+                    <h5 id="5d-forecast" class="bg-light d-none py-2 w-100" >5-Day Forecast: </h5>
                 </div>
                 <div class="row">                    
                     <div class="card-deck text-white w-100">
-                        <div class="col-md-2 card bg-primary pl-1">                          
-                          <div class="card-body p-0">
-                            <h5 id="day-1">10/07/2020</h5>
-                            <img alt="" id="day-one-icon">
-                            <p id="temp-day-1">Temprature: </p>
-                            <p id="humid-day-1">Humidity: </p>                          
-                          </div>
-                        </div>                        
-                        <div class="col-md-2 card bg-primary pl-1">                          
-                          <div class="card-body p-0">
-                            <h5 id="day-2">10/0/2020</h5>
-                            <img alt="" id="day-two-icon">
-                            <p id="temp-day-2">Temprature: </p>
-                            <p id="humid-day-2">Humidity: </p>                            
-                          </div>
-                        </div>                        
-                        <div class="col-md-2 card bg-primary pl-1">                          
-                          <div class="card-body p-0">
-                            <h5 id="day-3">10/0/2020</h5>
-                            <img alt="" id="day-three-icon">
-                            <p id="temp-day-3">Temprature: </p>
-                            <p id="humid-day-3">Humidity: </p>                       
-                          </div>
-                        </div>                        
-                        <div class="col-md-2 card bg-primary pl-1">                          
-                          <div class="card-body p-0">
-                            <h5 id="day-4">10/0/2020</h5>
-                            <img alt="" id="day-four-icon">
-                            <p id="temp-day-4">Temprature: </p>
-                            <p id="humid-day-4">Humidity: </p>                         
-                          </div>                        
-                        </div>
-                        <div class="col-md-2 card bg-primary pl-1">                          
-                          <div class="card-body p-0">
-                            <h5 id="day-5">10/0/2020</h5>
-                            <img alt="" id="day-five-icon">
-                            <p id="temp-day-5">Temprature: </p>
-                            <p id="humid-day-5">Humidity: </p>                         
-                          </div>
-                        </div>   
-                    </div>                        
-                                             
+                        
+                    </div>                                             
                 </div>
             </div>
         </div>
