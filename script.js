@@ -2,8 +2,8 @@
 let today = moment();
 let lat;
 let lon;
-let city;
-// let cityArr;
+var UVIndex;
+console.log(UVIndex)
 // this function builds a url to make weather request using jQuery param method
 function buildLocationUrl(){
     let url = "https://api.openweathermap.org/data/2.5/weather?";
@@ -30,13 +30,14 @@ function buildUVIndexUrl(){
 
 function updateLocationPage(location){       
     console.log(location)
-    city = location.name;
-    let iconUrl = location.weather[0].icon;
-    let src = `http://openweathermap.org/img/wn/${iconUrl}.png`
+    let city = location.name;
+    let icon = location.weather[0].icon;
+    let temp = location.main.temp;
+    let humid = location.main.humidity;
+    let windSpeed = location.wind.speed;
     
-    // let cityArr = [];
+    let src = `http://openweathermap.org/img/wn/${icon}.png`
     
-    // localStorage.setItem("city", JSON.stringify(cityArr))
     
     let liEl = $(`<li id='${city}' class='list-group-item'>`);
     // let id = $(liEl).attr("id");
@@ -76,9 +77,8 @@ function updateLocationPage(location){
         method: "GET"
     }).then(function(res){
         // console.log(res)
-        let UVIndex = res.value;
-        // console.log(UVIndex);
-        
+        UVIndex = res.value;
+                
         if(UVIndex > 8.00){
             $("#uv-index").addClass("btn-danger");
             $("#uv-index").removeClass("btn-success");
@@ -95,6 +95,16 @@ function updateLocationPage(location){
         $("#uv-label").text(`UV-Index: `)
         $("#uv-index").text(`${UVIndex}`)
     })
+    console.log(UVIndex);
+    let cityObj = {
+        name: city,
+        icon: icon,
+        temp: temp,
+        humid: humid,
+        windSpeed: windSpeed,
+        UVIndex: UVIndex
+    };
+    console.log(cityObj)
 
 }
 // a function to convert Kelvin to Farenheit
@@ -196,20 +206,20 @@ function updateForecastpage(forecast){
 //     $("#temp-day-5").html(`Temp: ${convertKtoF(parseFloat(forecastFive.main.temp)).toFixed(2)}&deg;F`)
 //     $("#humid-day-5").text(`Humidity:  ${forecastFive.main.humidity}%`)
 }
-function saveCityToLocalStorage(event){    
-    event.preventDefault();
-    // let text = $(this).parent("div").children(".form-control").val();
-    // let time = $(this).parent("div").children(".time-block").text();
-    let id = $(".list-group-item").attr("id");
-    console.log(id)
-    if(city === ""){
-        alert("you have to write a valid city name")
-        return           
-    }
-    else {               
-        localStorage.setItem(id, city);               
-    }            
-}
+// function saveCityToLocalStorage(event){    
+//     event.preventDefault();
+//     // let text = $(this).parent("div").children(".form-control").val();
+//     // let time = $(this).parent("div").children(".time-block").text();
+//     let id = $(".list-group-item").attr("id");
+//     console.log(id)
+//     if(city === ""){
+//         alert("you have to write a valid city name")
+//         return           
+//     }
+//     else {               
+//         localStorage.setItem(id, city);               
+//     }            
+// }
 
 
 
@@ -239,7 +249,7 @@ $(document).on("click", ".list-group-item", function(event){
     event.preventDefault();
     console.log($(this).text());
 })
-$(document).on("click", ".list-group-item", saveCityToLocalStorage)
+// $(document).on("click", ".list-group-item", saveCityToLocalStorage)
 
 // $(".list-group-item").on("click", function(event){
 //     let element = event.target;
