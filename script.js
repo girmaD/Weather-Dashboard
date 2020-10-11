@@ -2,21 +2,14 @@
 let today = moment();
 let lat;
 let lon;
-
-let city;
-let cityArr;
-let retrArr = JSON.parse(localStorage.getItem("city")) || "null";
-let lastCity;
-// let lastCity = retrArr[retrArr.length - 1];
-
-
+let retrArr = JSON.parse(localStorage.getItem("city")) || "null";;
 let appid = "99686e16316412bc9b27bd9cb868d399";
 
 // this function builds a url to make weather request using jQuery param method
 function buildLocationUrl(){
     let url = "https://api.openweathermap.org/data/2.5/weather?";
     var queryParams = { "appid": "99686e16316412bc9b27bd9cb868d399"};
-    // queryParams.q = $("#city-name").val().trim();    
+    queryParams.q = $("#city-name").val().trim();    
     queryParams.q = retrArr[cityArr.length - 1];    
     return url + $.param(queryParams);    
 }
@@ -24,7 +17,7 @@ function buildLocationUrl(){
 function buildForecastUrl(){
     let url = "https://api.openweathermap.org/data/2.5/forecast?";
     var queryParams = { "appid": "99686e16316412bc9b27bd9cb868d399"};
-    // queryParams.q = $("#city-name").val().trim();    
+    queryParams.q = $("#city-name").val().trim();    
     queryParams.q = retrArr[cityArr.length - 1];    
     return url + $.param(queryParams);    
 }
@@ -41,11 +34,7 @@ function buildUVIndexUrl(){
 function updateLocationPage(location){       
     console.log(location)
     let city = location.name;
-    let icon = location.weather[0].icon;
-    let temp = location.main.temp;
-    let humid = location.main.humidity;
-    let windSpeed = location.wind.speed;
-    
+    let icon = location.weather[0].icon;    
     let src = `http://openweathermap.org/img/wn/${icon}.png`
     
     for(let i = 0; i < retrArr.length; i++){
@@ -93,11 +82,7 @@ function updateLocationPage(location){
 function updatePage(location){       
     console.log(location)
     let city = location.name;
-    let icon = location.weather[0].icon;
-    let temp = location.main.temp;
-    let humid = location.main.humidity;
-    let windSpeed = location.wind.speed;
-    
+    let icon = location.weather[0].icon;    
     let src = `http://openweathermap.org/img/wn/${icon}.png`
          
     $("#main-body").removeClass("d-none");
@@ -172,10 +157,11 @@ function updateForecastpage(forecast){
 $("#search-button").on("click", function(event){
     event.preventDefault();
     $(".card-deck").empty();
+    $(".list-group-flush").empty();
 
     // *********
-   city = $("#city-name").val().trim();
-   cityArr = JSON.parse(localStorage.getItem("city"));
+    let city = $("#city-name").val().trim();
+    let cityArr = JSON.parse(localStorage.getItem("city"));
     if (!cityArr) {
         cityArr = [];
         cityArr.push(city);
@@ -184,16 +170,31 @@ $("#search-button").on("click", function(event){
         cityArr.push(city);
         localStorage.setItem("city", JSON.stringify(cityArr));
     }
-    renderCity();  
+    retrArr = JSON.parse(localStorage.getItem("city")) || "null";
+    // renderCity();  
+    let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${city}`;
+    let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${city}`;
+    $.ajax({
+        url: url, 
+        method: "GET"
+    }).fail(function () {
+        alert("Something wrong. Please verify spelling and try again.")
+        return;
+    }).then(updateLocationPage)
+    
+    $.ajax({
+        url: forecastUrl, 
+        method: "GET"
+    }).then(updateForecastpage) 
     // ********        
 })
 
 function renderCity() {
-    if(retrArr === "null") {
-        lastCity = $("#city-name").val().trim();
-    } else  {
-       lastCity = retrArr[retrArr.length - 1];
-    }
+    let retrArr = JSON.parse(localStorage.getItem("city")) || "null";
+    let lastCity = retrArr[retrArr.length - 1]
+    // if(retrArr !== "null") {
+    //     lastCity = retrArr[retrArr.length - 1];
+    // } 
     let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${lastCity}`;
     let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${lastCity}`;
     $.ajax({
@@ -206,9 +207,11 @@ function renderCity() {
         method: "GET"
     }).then(updateForecastpage)     
 }
-if (retrArr.length > 0){
+// console.log(retrArr.length)
+// console.log(retrArr)
+// if (retrArr){
     renderCity(); 
-}
+// }
 
 
 $(document).on("click", ".list-group-item", function(event){
