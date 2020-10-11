@@ -5,8 +5,9 @@ let lon;
 
 let city;
 let cityArr;
-let retrArr = JSON.parse(localStorage.getItem("city"));
-let lastCity = retrArr[retrArr.length - 1];
+let retrArr = JSON.parse(localStorage.getItem("city")) || "null";
+let lastCity;
+// let lastCity = retrArr[retrArr.length - 1];
 
 
 let appid = "99686e16316412bc9b27bd9cb868d399";
@@ -188,11 +189,11 @@ $("#search-button").on("click", function(event){
 })
 
 function renderCity() {
-    // if(!retrArr) {
-    //     lastCity = $("#city-name").val().trim();
-    // } else  {
-    //     retrArr[retrArr.length - 1];
-    // }
+    if(retrArr === "null") {
+        lastCity = $("#city-name").val().trim();
+    } else  {
+       lastCity = retrArr[retrArr.length - 1];
+    }
     let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${lastCity}`;
     let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${lastCity}`;
     $.ajax({
@@ -205,7 +206,10 @@ function renderCity() {
         method: "GET"
     }).then(updateForecastpage)     
 }
-renderCity(); 
+if (retrArr.length > 0){
+    renderCity(); 
+}
+
 
 $(document).on("click", ".list-group-item", function(event){
     event.preventDefault();
