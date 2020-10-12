@@ -18,7 +18,7 @@ The objective of this application to create weather dashboard application that d
 
 ## Snap shot of the UI
 
-![Alt text](./Assets/scheduler.png)
+![Alt text](./Assets/weather.png)
 
 ## How To Use The App
 
