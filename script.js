@@ -2,7 +2,7 @@
 let today = moment();
 let lat;
 let lon;
-let retrArr = JSON.parse(localStorage.getItem("city")) || "null";;
+let retrArr = JSON.parse(localStorage.getItem("city")) || "null";
 let appid = "99686e16316412bc9b27bd9cb868d399";
 let UVIndex;
 
@@ -181,6 +181,12 @@ $("#search-button").on("click", function(event){
 
     // grap the value from text input and call it city
     let city = $("#city-name").val().trim();
+    // if a user enters empty string, alert and render the last city in the array and then return(dont save empty string)
+    if(city === ""){
+        alert("You have to enter a valid city name");
+        // renderCity();
+        return;
+    }
     // take out array saved in local storage with the key "city" and call it cityArr
     let cityArr = JSON.parse(localStorage.getItem("city"));
     // if cityArr is not found
@@ -207,7 +213,14 @@ $("#search-button").on("click", function(event){
 // this function takes the last index in the retrArr and makes an ajax call
 function renderCity() {
     // grap the last elemtn in the retrArr and call it lastCity
-    let lastCity = retrArr[retrArr.length - 1]
+    let lastCity =retrArr[retrArr.length - 1];;
+    // ==========kept for discussion with amanda ======
+    // if(retrArr[retrArr.length - 1] !== $("#displayed-city").text()){
+    //     lastCity = $("#displayed-city").text();
+    // } 
+    // else {
+    //   lastCity = retrArr[retrArr.length - 1];
+    // }
     // the url to make weather ajax call
     let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${lastCity}`;
     // the url to make a forecast ajax call
@@ -217,24 +230,33 @@ function renderCity() {
         url: url, 
         method: "GET"
     })
+    // if the ajax call fails - alert and return
+    .fail(function () {
+        alert("Not a valid city, try again.")        
+    })
     // the call back function is updateLocationPage
     .then(updateLocationPage)
      // ajax call
     $.ajax({
         url: forecastUrl, 
         method: "GET"
-    })
+    })    
+    // if the ajax call fails - alert and return
+    // .fail(function () {
+    //     alert("Something went wrong; try again.")
+    //     return;
+    // })
      // the call back function is updateForecastpage
     .then(updateForecastpage)     
 }
 
 // function refreshPage() {
     // let retrArr = JSON.parse(localStorage.getItem("city")) || "null";
-    // let lastCity = retrArr[retrArr.length - 1]
+    // let lastCity = $("#displayed-city").text();
     // if($("#displayed-city").text()){
-        // let lastCity = $("#displayed-city").text();
+    //     let lastCity = $("#displayed-city").text();
     // }    
-    // console.log(lastCity);
+//     console.log(lastCity);
 //     let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${lastCity}`;
 //     let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${lastCity}`;
 //     $.ajax({
@@ -254,7 +276,7 @@ function renderCity() {
 if (retrArr !== "null" ){
     renderCity();     
 }
-
+// refreshPage();
 // listening to a click on city lists
 $(document).on("click", ".list-group-item", function(event){
     event.preventDefault();
@@ -271,6 +293,10 @@ $(document).on("click", ".list-group-item", function(event){
         url: url, 
         method: "GET"    
     })
+    // if the ajax call fails - alert and return
+    .fail(function () {
+        alert("Not a valid city, try again.")        
+    })
     // the call back function is updatePage
     .then(updatePage)
     
@@ -278,6 +304,11 @@ $(document).on("click", ".list-group-item", function(event){
         url: forecastUrl, 
         method: "GET"
     })
+    // if the ajax call fails - alert and return
+    // .fail(function () {
+    //     alert("Not a valid city, try again.")
+    //     return;
+    // })
     // the call back function is updateForecastpage
     .then(updateForecastpage)    
 });
