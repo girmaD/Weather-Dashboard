@@ -5,23 +5,11 @@ let lon;
 let retrArr = JSON.parse(localStorage.getItem("city")) || "null";
 let appid = "99686e16316412bc9b27bd9cb868d399";
 let UVIndex;
+// let displayedCity = JSON.parse(localStorage.getItem("displayedCity")) || "null";
+let displayedCity = localStorage.getItem("displayedCity");
+let lastCity =retrArr[retrArr.length - 1];
 
-// this function builds a url to make weather request using jQuery param method
-function buildLocationUrl(){
-    let url = "https://api.openweathermap.org/data/2.5/weather?";
-    var queryParams = { "appid": "99686e16316412bc9b27bd9cb868d399"};
-    queryParams.q = $("#city-name").val().trim();    
-    queryParams.q = retrArr[cityArr.length - 1];    
-    return url + $.param(queryParams);    
-}
-// this function builds a url to make forecast request using jQuery param method
-function buildForecastUrl(){
-    let url = "https://api.openweathermap.org/data/2.5/forecast?";
-    var queryParams = { "appid": "99686e16316412bc9b27bd9cb868d399"};
-    queryParams.q = $("#city-name").val().trim();    
-    queryParams.q = retrArr[cityArr.length - 1];    
-    return url + $.param(queryParams);    
-}
+
 // this function builds a url to make UV request using jQuery param method
 function buildUVIndexUrl(){
     let url = "https://api.openweathermap.org/data/2.5/uvi?";
@@ -39,6 +27,7 @@ function updateLocationPage(location){
     let icon = location.weather[0].icon;   
     // use icon to create a url which will be src for an img element below 
     let src = `https://openweathermap.org/img/wn/${icon}.png`
+    $(".list-group-flush").empty();
     // loop through retrArr 
     for(let i = 0; i < retrArr.length; i++){
         // create a list elemtn with the class shown
@@ -49,12 +38,9 @@ function updateLocationPage(location){
         $(".list-group-flush").prepend(liEl);
     }
     // make the div contaning id main-body visible
-    $("#main-body").removeClass("d-none");
-    // $("#displayed-city").text(city);
-    // $("#today-date").text(today.format("L"));
-    // $("#icon-img").html(`<img src=${src}>`);
+    $("#main-body").removeClass("d-none");    
     // fill the element containing id city-title with city name, date and imge that shows weather icon
-    $("#city-title").html(`<span id='displayed-city'>${city}</span> (${today.format("L")}) <img src=${src}>`)
+    $("#city-title").html(`${city} (${today.format("L")}) <img src=${src}>`)    
     // convert temprature to farheniet and place it in the element containing id temp
     $("#temp").html(`Temprature: ${convertKtoF(parseFloat(location.main.temp)).toFixed(2)}&deg;F`)
     // humidity also placed in the DOM
@@ -78,6 +64,11 @@ function updateLocationPage(location){
         UpdateUVIndex();        
     })
 }
+
+//this function converts Kelvin to Farenheit
+function convertKtoF(tempInKelvin) {    
+    return ((tempInKelvin - 273.15) * 9 / 5 + 32);
+}
 // this function updates the UVindex in the DOM and changes the color of the button 
 // containing UV index depending on the calue of the UV index
 function UpdateUVIndex(){
@@ -96,41 +87,6 @@ function UpdateUVIndex(){
     }
     $("#uv-label").text(`UV-Index: `)
     $("#uv-index").text(`${UVIndex}`)
-}
-// this function does exactly the samething as updateLocationPage except here I dont need to loop through retrArr
-// and fill the ul element. I only update the current weather and 5day forecase here.
-function updatePage(location){       
-    console.log(location)
-    let city = location.name;
-    let icon = location.weather[0].icon;    
-    let src = `https://openweathermap.org/img/wn/${icon}.png`
-         
-    $("#main-body").removeClass("d-none");
-    // $("#displayed-city").text(city);
-    // $("#today-date").text(today.format("L"));
-    // $("#icon-img").html(`<img src=${src}>`);
-    $("#city-title").html(`<span id='displayed-city'>${city}</span> (${today.format("L")}) <img src=${src}>`)
-    $("#temp").html(`Temprature: ${convertKtoF(parseFloat(location.main.temp)).toFixed(2)}&deg;F`)
-    $("#humidity").text(`Humidity: ${location.main.humidity}%`)
-    $("#wind-speed").text(`Wind Speed: ${location.wind.speed}MPH`)
-
-    // making a UV index request and function
-    lon = location.coord.lon;
-    lat = location.coord.lat;
-    let UVUrl = buildUVIndexUrl();
-    
-    $.ajax({
-        url: UVUrl, 
-        method: "GET"
-    }).then(function(res){
-        // console.log(res)
-        UVIndex = res.value; 
-        UpdateUVIndex();         
-    })
-}
-//this function converts Kelvin to Farenheit
-function convertKtoF(tempInKelvin) {    
-    return ((tempInKelvin - 273.15) * 9 / 5 + 32);
 }
 
 // function to update the 5-day forecast html file
@@ -171,60 +127,15 @@ function updateForecastpage(forecast){
     // make the html element containing id 5d-forecast visible
     $("#5d-forecast").removeClass("d-none");    
 }
-// listen to a click event on search button - push the text input value in to local-storage array and call renderCity function
-$("#search-button").on("click", function(event){
-    event.preventDefault();
-    // empty the div that displays the 5-day forecast
-    $(".card-deck").empty();
-    // empty the ul elements that displays the list of cities searched
-    $(".list-group-flush").empty();
 
-    // grap the value from text input and call it city
-    let city = $("#city-name").val().trim();
-    // if a user enters empty string, alert and render the last city in the array and then return(dont save empty string)
-    if(city === ""){
-        alert("You have to enter a valid city name");
-        // renderCity();
-        return;
-    }
-    // take out array saved in local storage with the key "city" and call it cityArr
-    let cityArr = JSON.parse(localStorage.getItem("city"));
-    // if cityArr is not found
-    if (!cityArr) {
-        // make cityArr and empty array
-        cityArr = [];
-        // push city in the cityArr array
-        cityArr.push(city);
-        // stringfy and store it in the local storage with "city" as a key
-        localStorage.setItem("city", JSON.stringify(cityArr));
-    }
-    // if cityArr is found
-    else {
-        // push city to the cityArr
-        cityArr.push(city);
-        // and stringfy and store it in the local storage with "city" as a key
-        localStorage.setItem("city", JSON.stringify(cityArr));
-    }
-    // grap from local storage, parse it and call it retrArr
-    retrArr = JSON.parse(localStorage.getItem("city")) || "null";
-    // invoke renderCity function to run here
-    renderCity();         
-})
 // this function takes the last index in the retrArr and makes an ajax call
-function renderCity() {
-    // grap the last elemtn in the retrArr and call it lastCity
-    let lastCity =retrArr[retrArr.length - 1];;
-    // ==========kept for discussion with amanda ======
-    // if(retrArr[retrArr.length - 1] !== $("#displayed-city").text()){
-    //     lastCity = $("#displayed-city").text();
-    // } 
-    // else {
-    //   lastCity = retrArr[retrArr.length - 1];
-    // }
+function renderCity(city) {
+    // grap the last elemtn in the retrArr and call it lastCity    
+    
     // the url to make weather ajax call
-    let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${lastCity}`;
+    let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${city}`;
     // the url to make a forecast ajax call
-    let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${lastCity}`;
+    let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${city}`;
     // ajax call
     $.ajax({
         url: url, 
@@ -240,76 +151,77 @@ function renderCity() {
     $.ajax({
         url: forecastUrl, 
         method: "GET"
-    })    
-    // if the ajax call fails - alert and return
-    // .fail(function () {
-    //     alert("Something went wrong; try again.")
-    //     return;
-    // })
+    })   
      // the call back function is updateForecastpage
     .then(updateForecastpage)     
 }
 
-// function refreshPage() {
-    // let retrArr = JSON.parse(localStorage.getItem("city")) || "null";
-    // let lastCity = $("#displayed-city").text();
-    // if($("#displayed-city").text()){
-    //     let lastCity = $("#displayed-city").text();
-    // }    
-//     console.log(lastCity);
-//     let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${lastCity}`;
-//     let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${lastCity}`;
-//     $.ajax({
-//         url: url, 
-//         method: "GET"
-//     }).then(updateLocationPage)
-    
-//     $.ajax({
-//         url: forecastUrl, 
-//         method: "GET"
-//     }).then(updateForecastpage)     
-// }
-// console.log(retrArr.length)
-// console.log(retrArr)
-
-// run renderCity only if retrArr is not null. With no city given(empty local-storage) don't bother to make ajax call
-if (retrArr !== "null" ){
-    renderCity();     
+if(displayedCity){
+    renderCity(displayedCity)
 }
-// refreshPage();
+
+// listen to a click event on search button - push the text input value in to local-storage array and call renderCity function
+$("#search-button").on("click", function(event){
+    event.preventDefault();
+    // empty the div that displays the 5-day forecast
+    $(".card-deck").empty();
+    // empty the ul elements that displays the list of cities searched
+    $(".list-group-flush").empty();
+
+    // grap the value from text input and call it city
+    let city = $("#city-name").val().trim().toUpperCase();
+    // === save city to local storage so that it can be used when page refreshed====
+    if(city !== "") {
+        displayedCity = city;
+        localStorage.setItem("displayedCity", displayedCity)
+    }    
+    displayedCity = localStorage.getItem("displayedCity");
+    //==========================
+    // if a user enters empty string, alert and render the last city in the array and then return(dont save empty string)
+    if(city === ""){
+        alert("You have to enter a valid city name");       
+        return;
+    }
+    // take out array saved in local storage with the key "city" and call it cityArr
+    let cityArr = JSON.parse(localStorage.getItem("city"));
+    // if cityArr is not found
+    if (!cityArr) {
+        // make cityArr and empty array
+        cityArr = [];
+        // push city in the cityArr array
+        if(cityArr.indexOf(city) === -1){
+            cityArr.push(city);
+            // stringfy and store it in the local storage with "city" as a key
+            localStorage.setItem("city", JSON.stringify(cityArr));
+        }       
+    }
+    // if cityArr is found
+    else {
+        if(cityArr.indexOf(city) === -1){
+            cityArr.push(city);
+            // stringfy and store it in the local storage with "city" as a key
+            localStorage.setItem("city", JSON.stringify(cityArr));
+        }  
+    }
+    // grap from local storage, parse it and call it retrArr
+    retrArr = JSON.parse(localStorage.getItem("city")) || "null";
+    lastCity = retrArr[retrArr.length -1];
+    // invoke renderCity function to run here
+    renderCity(lastCity);         
+})
+
 // listening to a click on city lists
 $(document).on("click", ".list-group-item", function(event){
     event.preventDefault();
    // empty the div that displays the 5-day forecast
     $(".card-deck").empty();
     // grab the value of the cliked list and call it clickedCity
-    let clickedCity =  $(this).text();       
-    // the url to make weather ajax call with clickedCity
-    let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${clickedCity}`;
-    // the url to make forecast ajax call with clickedCity
-    let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${clickedCity}`;
-    // ajax call
-    $.ajax({
-        url: url, 
-        method: "GET"    
-    })
-    // if the ajax call fails - alert and return
-    .fail(function () {
-        alert("Not a valid city, try again.")        
-    })
-    // the call back function is updatePage
-    .then(updatePage)
-    
-    $.ajax({
-        url: forecastUrl, 
-        method: "GET"
-    })
-    // if the ajax call fails - alert and return
-    // .fail(function () {
-    //     alert("Not a valid city, try again.")
-    //     return;
-    // })
-    // the call back function is updateForecastpage
-    .then(updateForecastpage)    
+    let clickedCity =  $(this).text();  
+    // displayedCity.push(clickedCity); 
+    displayedCity = clickedCity;   
+    localStorage.setItem("displayedCity", displayedCity)
+    displayedCity = localStorage.getItem("displayedCity");
+    //Invoke renderCity function with a new clickedCity variable  
+    renderCity(clickedCity) 
 });
 

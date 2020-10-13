@@ -1,4 +1,4 @@
-# Work-day-scheduler
+# Weather-Dashboard
 * View the [Github Repo](https://github.com/girmaD/Weather-Dashboard)
 * View the [Deployed Application](https://girmad.github.io/Weather-Dashboard/)
 ## Table Of Contents
@@ -7,8 +7,9 @@
 * [Snap shot of the UI](#snap-shot-of-the-UI)
 * [How To Use The App](#How-To-Use-The-App)
 * [Contact](Contact)
+
 ## Introduction
-This application presents a weather dashboard. It renders current weather information for a user searched city, it also displays a five day forecast for the same city. All enquired cities will also be displayed on the left side of the page. This app runs in the browser and feature dynamically updated HTML and CSS powered by jQuery. jQuery's ajax method is used to send API requests to openweatherdata.org api.
+This application presents a weather dashboard. It renders current weather information for a user searched city, it also displays a five day forecast for the same city. All enquired cities will also be displayed on the left side of the page. This app runs in the browser and feature dynamically updated HTML and CSS powered by jQuery. jQuery's ajax method is used to send API requests to openweatherdata.orgss api.
 
 Three API requests are made for every searched city - weather request to get current weather information, forecast request to get five day forecast and UVI request to get ultra violet index.
 

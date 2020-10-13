@@ -19,14 +19,23 @@
         <div class="row">
             <div class="col-md-3 bg-light ml-3">
                 <div class="row">
-                    <h5 class="d-none d-sm-block">Search for a city:</h5>
-                    <form class="form-inline">                        
-                        <input type="text" class="form-control mb-2" id="city-name" placeholder="enter a city name">                                                                     
-                        <button type="submit" id="search-button" class="btn btn-primary mb-2 ml-1 float-right"><i
-                            class="fa fa-search"></i></button>
-                      </form>
-                </div>
-                <div class="row mt-3 d-none d-sm-block">
+                    <form class="">
+                        <div class="form-row align-items-center ml-0">
+                        <div class="col-auto d-none d-sm-block">
+                            <h5 >Search for a city:</h5>
+                        </div>
+                        <div class="col-auto ">
+                            <!-- <label  for="city-name">Search for a city</label> -->
+                            <input type="text" class="form-control " id="city-name" placeholder="enter a city name">
+                        </div>
+                        <div class="col-auto">
+                            <button type="submit" id="search-button" class="btn btn-primary   float-right"><i
+                                class="fa fa-search"></i></button>
+                        </div>
+                        </div>
+                    </form>
+                </div>                
+                <div class="row mt-3">
                     <div class="card w-75">
                         <ul class="list-group list-group-flush ">
                         
@@ -39,9 +48,7 @@
                     <div class="card w-100">
                         <div id="main-body" class="card-body d-none bg-secondary text-white">
                           <h5 id="city-title">
-                            <span id='displayed-city'></span>
-                            <span id="today-date" ></span>  
-                            <span id="icon-img"></span>
+                            
                           </h5>                       
                           <p id="temp"></p>                          
                           <p id="humidity"></p>                          
