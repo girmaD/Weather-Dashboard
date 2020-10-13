@@ -155,7 +155,8 @@ function renderCity(city) {
      // the call back function is updateForecastpage
     .then(updateForecastpage)     
 }
-
+// when the page loads - if displayedCity variable is available, run renderCity function by
+// taking displayedCity variable
 if(displayedCity){
     renderCity(displayedCity)
 }
