@@ -183,21 +183,22 @@ $("#search-button").on("click", function(event){
         alert("You have to enter a valid city name");       
         return;
     }
+    console.log(typeof city)
+    // else if(typeof city)
     // take out array saved in local storage with the key "city" and call it cityArr
     let cityArr = JSON.parse(localStorage.getItem("city"));
     // if cityArr is not found
     if (!cityArr) {
-        // make cityArr and empty array
+        //make cityArr and empty array
         cityArr = [];
-        // push city in the cityArr array
-        if(cityArr.indexOf(city) === -1){
-            cityArr.push(city);
-            // stringfy and store it in the local storage with "city" as a key
-            localStorage.setItem("city", JSON.stringify(cityArr));
-        }       
+        //push it to cityArr
+        cityArr.push(city);
+        // stringfy and store it in the local storage with "city" as a key
+        localStorage.setItem("city", JSON.stringify(cityArr));               
     }
-    // if cityArr is found
+    // if cityArr is found in local storage
     else {
+        //if city is already not searched before and not in cityArr, push it and store it
         if(cityArr.indexOf(city) === -1){
             cityArr.push(city);
             // stringfy and store it in the local storage with "city" as a key
@@ -206,6 +207,7 @@ $("#search-button").on("click", function(event){
     }
     // grap from local storage, parse it and call it retrArr
     retrArr = JSON.parse(localStorage.getItem("city")) || "null";
+    //update lastCity to be the last element of the newly modified retrArr
     lastCity = retrArr[retrArr.length -1];
     // invoke renderCity function to run here
     renderCity(lastCity);         
