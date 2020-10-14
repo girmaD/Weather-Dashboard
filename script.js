@@ -5,10 +5,7 @@ let lon;
 let retrArr = JSON.parse(localStorage.getItem("city")) || "null";
 let appid = "99686e16316412bc9b27bd9cb868d399";
 let UVIndex;
-// let displayedCity = JSON.parse(localStorage.getItem("displayedCity")) || "null";
 let displayedCity = localStorage.getItem("displayedCity");
-let lastCity =retrArr[retrArr.length - 1];
-
 
 // this function builds a url to make UV request using jQuery param method
 function buildUVIndexUrl(){
@@ -20,12 +17,40 @@ function buildUVIndexUrl(){
 }
 
 // a function to update the DOM with current weather and cities searched
-function updateLocationPage(location){       
-    // take name property form location object
-    let city = location.name;
-    // take icon from weather array inside the location object
-    let icon = location.weather[0].icon;   
-    // use icon to create a url which will be src for an img element below 
+function updateLocationPage(location){  
+    let city = location.name;   
+   
+    //save it in local storage with key "displayedCity"
+    localStorage.setItem("displayedCity", city);    
+    //grap it out from local storage so that it updates whenever there is an ajax call
+    displayedCity = localStorage.getItem("displayedCity");
+    
+    //take out array saved in local storage with the key "city" and call it cityArr
+    let cityArr = JSON.parse(localStorage.getItem("city"));
+    // if cityArr is not found
+    if (!cityArr) {
+        //make cityArr and empty array
+        cityArr = [];
+        //push it to cityArr
+        cityArr.push(city);
+        // stringfy and store it in the local storage with "city" as a key
+        localStorage.setItem("city", JSON.stringify(cityArr));               
+    }
+    // if cityArr is found in local storage
+    else {
+        //if city is already not searched before and not in cityArr, push it and store it
+        if(cityArr.indexOf(city) === -1){
+            cityArr.push(city);
+            // stringfy and store it in the local storage with "city" as a key
+            localStorage.setItem("city", JSON.stringify(cityArr));
+        }  
+    }
+    // grap from local storage, parse it and call it retrArr, to make sure retrArr updates after every ajax call
+    retrArr = JSON.parse(localStorage.getItem("city"));  
+
+    //take icon from weather array inside the location object
+    let icon = location.weather[0].icon;  
+    //use icon to create a url which will be src for an img element below 
     let src = `https://openweathermap.org/img/wn/${icon}.png`
     $(".list-group-flush").empty();
     // loop through retrArr 
@@ -129,12 +154,10 @@ function updateForecastpage(forecast){
 }
 
 // this function takes the last index in the retrArr and makes an ajax call
-function renderCity(city) {
-    // grap the last elemtn in the retrArr and call it lastCity    
-    
-    // the url to make weather ajax call
+function renderCity(city) {   
+    // the url to make weather ajax call with the parameter on this function
     let url = `https://api.openweathermap.org/data/2.5/weather?appid=${appid}&q=${city}`;
-    // the url to make a forecast ajax call
+    // the url to make a forecast ajax call with the parameter on this function
     let forecastUrl = `https://api.openweathermap.org/data/2.5/forecast?appid=${appid}&q=${city}`;
     // ajax call
     $.ajax({
@@ -143,7 +166,7 @@ function renderCity(city) {
     })
     // if the ajax call fails - alert and return
     .fail(function () {
-        alert("Not a valid city, try again.")        
+        alert("Not a valid city, try again.");
     })
     // the call back function is updateLocationPage
     .then(updateLocationPage)
@@ -170,11 +193,8 @@ $("#search-button").on("click", function(event){
     $(".list-group-flush").empty();
 
     // grap the value from text input and call it city
-    let city = $("#city-name").val().trim().toUpperCase();
-    // === save city to local storage so that it can be used when page refreshed====
-        
-    console.log(isNaN(city))
-    //==========================
+    let city = $("#city-name").val().trim();
+   
     // if a user enters empty string, alert and render the last city in the array and then return(dont save empty string)
     if(city === ""){
         alert("You have to enter a valid city name");       
@@ -185,37 +205,7 @@ $("#search-button").on("click", function(event){
         alert("Numbers are not accepted, try again");
         return;
     }    
-    displayedCity = city;
-    localStorage.setItem("displayedCity", displayedCity);    
-    displayedCity = localStorage.getItem("displayedCity");
-    // }
-    // else if(typeof city)
-    // take out array saved in local storage with the key "city" and call it cityArr
-    let cityArr = JSON.parse(localStorage.getItem("city"));
-    // if cityArr is not found
-    if (!cityArr) {
-        //make cityArr and empty array
-        cityArr = [];
-        //push it to cityArr
-        cityArr.push(city);
-        // stringfy and store it in the local storage with "city" as a key
-        localStorage.setItem("city", JSON.stringify(cityArr));               
-    }
-    // if cityArr is found in local storage
-    else {
-        //if city is already not searched before and not in cityArr, push it and store it
-        if(cityArr.indexOf(city) === -1){
-            cityArr.push(city);
-            // stringfy and store it in the local storage with "city" as a key
-            localStorage.setItem("city", JSON.stringify(cityArr));
-        }  
-    }
-    // grap from local storage, parse it and call it retrArr
-    retrArr = JSON.parse(localStorage.getItem("city"));
-    //update lastCity to be the last element of the newly modified retrArr
-    lastCity = retrArr[retrArr.length -1];
-    // invoke renderCity function to run here
-    renderCity(lastCity);         
+    renderCity(city);         
 })
 
 // listening to a click on city lists
@@ -225,9 +215,9 @@ $(document).on("click", ".list-group-item", function(event){
     $(".card-deck").empty();
     // grab the value of the cliked list and call it clickedCity
     let clickedCity =  $(this).text();  
-    // displayedCity.push(clickedCity); 
-    displayedCity = clickedCity;   
-    localStorage.setItem("displayedCity", displayedCity)
+    //save it local storage with a key displayedCity;  
+    localStorage.setItem("displayedCity", clickedCity)
+    //get it out from localStorage so tha it updated after every city click
     displayedCity = localStorage.getItem("displayedCity");
     //Invoke renderCity function with a new clickedCity variable  
     renderCity(clickedCity) 
