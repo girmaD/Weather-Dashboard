@@ -172,18 +172,23 @@ $("#search-button").on("click", function(event){
     // grap the value from text input and call it city
     let city = $("#city-name").val().trim().toUpperCase();
     // === save city to local storage so that it can be used when page refreshed====
-    if(city !== "") {
-        displayedCity = city;
-        localStorage.setItem("displayedCity", displayedCity)
-    }    
-    displayedCity = localStorage.getItem("displayedCity");
+        
+    console.log(isNaN(city))
     //==========================
     // if a user enters empty string, alert and render the last city in the array and then return(dont save empty string)
     if(city === ""){
         alert("You have to enter a valid city name");       
         return;
     }
-    console.log(typeof city)
+    //making sure city is not a number
+    else if(isNaN(city) === false){
+        alert("Numbers are not accepted, try again");
+        return;
+    }    
+    displayedCity = city;
+    localStorage.setItem("displayedCity", displayedCity);    
+    displayedCity = localStorage.getItem("displayedCity");
+    // }
     // else if(typeof city)
     // take out array saved in local storage with the key "city" and call it cityArr
     let cityArr = JSON.parse(localStorage.getItem("city"));
@@ -206,7 +211,7 @@ $("#search-button").on("click", function(event){
         }  
     }
     // grap from local storage, parse it and call it retrArr
-    retrArr = JSON.parse(localStorage.getItem("city")) || "null";
+    retrArr = JSON.parse(localStorage.getItem("city"));
     //update lastCity to be the last element of the newly modified retrArr
     lastCity = retrArr[retrArr.length -1];
     // invoke renderCity function to run here
