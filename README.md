@@ -28,6 +28,14 @@ A user can use this application in the following ways:
 2. Clicking a city from the list of searched cities will display the clicked city's current and forecasted weather data.
 3. Refreshing the page will provide the user an updated weather data for the last searched city.
 
+## Technologies Used
+- openweather API
+- Bootstrap (CSS Framework)
+- jQuery
+- JavaScript
+- CSS
+- HTML
+
 ## Contact
 
 Should you have any questions about this repo or the deployed page, contact me on [girma.derib@gmail.com](mailto:girma.derib@gmail.com)
