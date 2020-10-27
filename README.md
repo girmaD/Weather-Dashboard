@@ -36,6 +36,8 @@ A user can use this application in the following ways:
 - CSS
 - HTML
 
+## License
+- MIT
 ## Contact
 
 Should you have any questions about this repo or the deployed page, contact me on [girma.derib@gmail.com](mailto:girma.derib@gmail.com)
